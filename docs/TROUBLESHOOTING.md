@@ -1,32 +1,44 @@
 # Troubleshooting
 
-프로젝트 진행 중 발생한 문제와 해결 과정을 기록하는 문서입니다.
-
-## Issue 1. 실행 환경 차이
+## Python command not found
 
 ### Problem
 
-개발 환경과 다른 PC에서 실행할 때 필요한 패키지나 도구가 누락될 수 있습니다.
-
-### Cause
-
-실행 방법과 의존성 정보가 명확히 정리되어 있지 않으면 재현성이 떨어집니다.
+`python src/low_pass_filter.py` 실행 시 Python을 찾을 수 없다는 메시지가 나올 수 있습니다.
 
 ### Solution
 
-- README에 실행 명령 추가
-- 필요한 패키지 목록 작성
-- OS 또는 도구 버전 명시
+Windows 환경에서는 아래 명령을 사용할 수 있습니다.
 
-## Issue 2. 입력 데이터 오류
+```bash
+py src/low_pass_filter.py
+```
+
+## Output CSV is not created
 
 ### Problem
 
-잘못된 입력값이 들어오면 프로그램이 중단될 수 있습니다.
+실행 후 `assets/filter_output.csv`가 보이지 않을 수 있습니다.
 
 ### Solution
 
-- 입력값 검증 로직 추가
-- 예외 발생 시 안내 메시지 출력
-- 샘플 입력 데이터 제공
+프로젝트 루트 폴더에서 명령을 실행했는지 확인합니다.
+
+```bash
+python src/low_pass_filter.py
+```
+
+## Test import error
+
+### Problem
+
+테스트 실행 시 `ModuleNotFoundError`가 발생할 수 있습니다.
+
+### Solution
+
+프로젝트 루트에서 다음 명령으로 실행합니다.
+
+```bash
+python -m unittest discover -s tests
+```
 

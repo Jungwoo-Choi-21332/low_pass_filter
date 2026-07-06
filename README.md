@@ -1,134 +1,133 @@
-# Portfolio Project
+# Low Pass Filter Simulation
 
-> 취업 포트폴리오 제출을 위해 정리한 프로젝트 저장소입니다.  
-> 프로젝트의 목적, 구현 과정, 주요 기능, 실행 방법, 개선 방향을 한눈에 확인할 수 있도록 구성했습니다.
+취업 포트폴리오 제출을 위해 정리한 **RC Low Pass Filter 분석 및 시뮬레이션 프로젝트**입니다.  
+아날로그 1차 RC 저역통과 필터의 원리를 Python으로 모델링하고, 입력 신호에서 고주파 성분이 감쇠되는 과정을 재현할 수 있도록 구현했습니다.
 
-## 1. Project Overview
+## Project Overview
 
-이 프로젝트는 사용자의 요구사항을 분석하고, 실제 동작 가능한 결과물로 구현하는 과정을 정리한 포트폴리오용 프로젝트입니다.  
-단순히 결과 코드만 업로드하는 것이 아니라, 문제 정의부터 설계, 구현, 검증, 개선 방향까지 함께 설명하는 것을 목표로 합니다.
+Low Pass Filter는 낮은 주파수 성분은 통과시키고 높은 주파수 성분은 감쇠시키는 회로/신호처리 기본 블록입니다.  
+이 프로젝트에서는 RC 회로의 차단 주파수와 이산 시간 필터 식을 이용해 필터 동작을 소프트웨어로 검증합니다.
 
-### 핵심 목표
+### 목표
 
-- 요구사항을 기능 단위로 분해하고 구현
-- 재현 가능한 실행 환경 구성
-- GitHub에서 바로 확인 가능한 문서화
-- 유지보수와 확장을 고려한 프로젝트 구조 정리
+- RC 저역통과 필터의 차단 주파수 계산
+- 1차 IIR 형태의 저역통과 필터 구현
+- 저주파 신호와 고주파 잡음이 섞인 입력 신호 생성
+- 필터 적용 전/후 데이터를 CSV로 저장
+- 단위 테스트를 통해 계산식과 필터 동작 검증
 
-## 2. Tech Stack
-
-프로젝트에 맞게 아래 항목을 수정해서 사용하면 됩니다.
+## Tech Stack
 
 | Category | Stack |
 | --- | --- |
-| Language | Python / JavaScript / C / Verilog 등 |
-| Framework | Flask / React / Tkinter / 기타 |
-| Tools | Git, GitHub, VS Code, PyCharm |
-| Documentation | Markdown |
+| Language | Python 3 |
+| Core Libraries | math, csv, argparse, dataclasses |
+| Test | unittest |
+| Version Control | Git, GitHub |
 
-## 3. Repository Structure
+외부 패키지 없이 Python 표준 라이브러리만 사용하도록 구성했습니다.
+
+## Repository Structure
 
 ```text
 .
 ├── README.md
 ├── LICENSE
 ├── .gitignore
-├── assets/
-│   └── screenshots 또는 이미지 자료
 ├── docs/
 │   ├── PROJECT_REPORT.md
+│   ├── FILTER_THEORY.md
 │   └── TROUBLESHOOTING.md
 ├── src/
-│   └── source code
+│   ├── __init__.py
+│   └── low_pass_filter.py
 └── tests/
-    └── test code
+    └── test_low_pass_filter.py
 ```
 
-## 4. Main Features
+## Filter Theory
 
-프로젝트에 맞게 실제 구현 내용을 아래에 정리합니다.
-
-- 기능 1: 주요 입력을 받아 처리하는 핵심 로직 구현
-- 기능 2: 결과를 사용자가 확인하기 쉬운 형태로 출력
-- 기능 3: 예외 상황 처리 및 안정성 개선
-- 기능 4: 코드 구조를 모듈화하여 유지보수성 확보
-
-## 5. Implementation Notes
-
-### 요구사항 분석
-
-프로젝트의 입력, 출력, 핵심 처리 흐름을 먼저 정의하고 기능을 작은 단위로 나누어 구현했습니다.
-
-### 설계 방향
-
-- 실행 방법이 단순해야 함
-- 코드와 문서가 함께 관리되어야 함
-- 사용자가 결과를 쉽게 재현할 수 있어야 함
-- 추후 기능 추가가 가능하도록 폴더 구조를 분리해야 함
-
-### 검증 방법
-
-- 정상 입력에 대한 실행 확인
-- 비정상 입력 또는 누락 값 처리 확인
-- 주요 함수 단위 테스트 또는 수동 테스트 수행
-
-## 6. How to Run
-
-프로젝트 성격에 따라 아래 예시 중 맞는 내용을 남기면 됩니다.
-
-### Python
-
-```bash
-python src/main.py
-```
-
-### Node.js
-
-```bash
-npm install
-npm run dev
-```
-
-### Verilog / Digital Design
-
-```bash
-# 사용하는 시뮬레이터에 맞게 수정
-iverilog -o sim.out src/*.v
-vvp sim.out
-```
-
-## 7. Result
-
-실행 결과, 화면 캡처, 출력 예시 등을 이곳에 정리합니다.
+1차 RC Low Pass Filter의 차단 주파수는 다음과 같습니다.
 
 ```text
-Example output will be added here.
+fc = 1 / (2 * pi * R * C)
 ```
 
-스크린샷은 `assets/` 폴더에 넣고 아래 형식으로 연결하면 됩니다.
+이 프로젝트에서는 연속 시간 RC 필터를 아래의 이산 시간 IIR 형태로 근사했습니다.
 
-```markdown
-![result](assets/result.png)
+```text
+alpha = dt / (R * C + dt)
+y[n] = y[n-1] + alpha * (x[n] - y[n-1])
 ```
 
-## 8. What I Learned
+- `R`: resistance in ohms
+- `C`: capacitance in farads
+- `dt`: sampling interval
+- `alpha`: smoothing coefficient
+- `x[n]`: input sample
+- `y[n]`: filtered output sample
 
-- 요구사항을 구현 가능한 기능으로 나누는 방법
-- GitHub 저장소를 포트폴리오 형태로 정리하는 방법
-- 결과물뿐 아니라 설계 의도와 검증 과정을 문서화하는 중요성
-- 유지보수 가능한 구조로 프로젝트를 관리하는 방법
+## How to Run
 
-## 9. Future Improvements
+### 1. Run default simulation
 
-- 테스트 코드 보강
-- UI/UX 개선 또는 사용성 개선
-- 예외 처리 강화
-- 배포 자동화 또는 실행 환경 자동 구성
-- 성능 최적화
+```bash
+python src/low_pass_filter.py
+```
 
-## 10. Author
+기본 실행 시 `assets/filter_output.csv` 파일이 생성됩니다.
 
-- Name: 본인 이름
-- Email: 본인 이메일
-- GitHub: https://github.com/your-github-id
+### 2. Change filter parameters
+
+```bash
+python src/low_pass_filter.py --resistance 1000 --capacitance 0.000001 --sample-rate 10000 --duration 0.05
+```
+
+### 3. Run tests
+
+```bash
+python -m unittest discover -s tests
+```
+
+## Example Output
+
+```text
+Cutoff frequency: 159.15 Hz
+Generated samples: 500
+Output CSV: assets/filter_output.csv
+```
+
+CSV에는 시간, 원본 입력 신호, 필터 적용 결과가 함께 저장됩니다.
+
+```csv
+time,input,output
+0.0,0.0,0.0
+0.0001,0.3568,0.1370
+...
+```
+
+## Main Implementation Points
+
+- `RCFilterConfig`: 저항, 커패시터, 샘플링 주파수 등 필터 설정 관리
+- `cutoff_frequency()`: RC 회로의 차단 주파수 계산
+- `alpha()`: 이산 시간 필터 계수 계산
+- `apply_low_pass_filter()`: 입력 샘플에 저역통과 필터 적용
+- `generate_mixed_signal()`: 저주파 성분과 고주파 잡음이 섞인 테스트 신호 생성
+- `write_csv()`: 분석 결과를 GitHub에서 확인 가능한 CSV 파일로 저장
+
+## Portfolio Value
+
+이 프로젝트는 단순 구현보다 다음 역량을 보여주는 데 초점을 맞췄습니다.
+
+- 전자회로/신호처리 이론을 코드로 변환하는 능력
+- 수식 기반 알고리즘을 테스트 가능한 구조로 구현하는 능력
+- 결과 재현이 가능한 CLI 프로그램 구성
+- GitHub 포트폴리오용 문서화 및 저장소 정리 능력
+
+## Future Improvements
+
+- Matplotlib 기반 파형 시각화 추가
+- 주파수 응답 그래프 생성
+- 실제 측정 데이터 CSV 입력 기능 추가
+- Verilog 또는 SPICE 시뮬레이션 결과와 비교
 
