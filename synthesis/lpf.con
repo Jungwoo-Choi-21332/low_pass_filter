@@ -1,0 +1,37 @@
+reset_design
+
+create_clock -period 3.0 -waveform {0 1.5} [get_ports clk]
+
+set_min_pulse_width -high 1.0 [get_clocks clk]
+set_min_pulse_width -low  1.0 [get_clocks clk]
+
+create_clock -name rst_clk \
+             -period 30 \
+             -waveform {0.8 15.8} \
+             [get_ports n_rst]
+
+# 이 부분 제거
+# set_clock_groups -asynchronous ...
+
+set_min_pulse_width -high 1.0 [get_clocks rst_clk]
+set_min_pulse_width -low  1.0 [get_clocks rst_clk]
+
+set_clock_transition 0.15 [get_clocks clk]
+
+set_clock_uncertainty -setup 0.05 [get_clocks clk]
+set_clock_uncertainty -hold  0.00 [get_clocks clk]
+
+set_input_delay  -max 2.0 -clock clk [get_ports xn]
+set_input_delay  -min 0.8 -clock clk [get_ports xn]
+
+set_output_delay -max 2.0 -clock clk [get_ports yn]
+set_output_delay -min 0.5 -clock clk [get_ports yn]
+
+set_driving_cell -lib_cell INVX1 [get_ports xn]
+set_load 0.05 [get_ports yn]
+
+set_max_area 0
+
+check_timing
+report_analysis_coverage
+report_constraint -all_violators
